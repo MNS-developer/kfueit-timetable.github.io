@@ -195,11 +195,40 @@
         padding: 5px;
         border-bottom: 1px dashed #26a69a;
     }
+    #freeRoomsResult li.free-room-item:hover {
+        background: #1a3a4a;
+        color: #00b7eb;
+        text-shadow: 0 0 6px #00b7eb;
+        padding-left: 12px;
+        transition: all 0.2s ease;
+    }
     .btn-primary {
         background: linear-gradient(19deg, #00b7eb, #26a69a);
         border: none;
         color: #ffffff;
     }
+
+    /* ---- Style for native select on Free Rooms section ---- */
+    .custom-select-kfueit {
+        background: #102027 !important;
+        color: #00b7eb !important;
+        border: 1px solid #00b7eb !important;
+        border-radius: 4px;
+        font-family: 'Orbitron', sans-serif;
+        padding: 6px 12px;
+        width: 100%;
+        max-width: 100%;
+        appearance: none;
+    }
+    .custom-select-kfueit:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #00b7eb55;
+        border-color: #00b7eb;
+    }
+    .free-rooms-form-row label {
+        color: #26a69a;
+    }
+    /* ------------------------------------------------------ */
     </style>
     </head>
     <body>
@@ -240,14 +269,14 @@
         <div class="free-rooms-form-row animate__animated animate__fadeIn">
             <div class="col-md-3">
                 <label>Select Day</label>
-                <select id="daySelect" class="form-control selectpicker">
+                <select id="daySelect" class="form-control custom-select-kfueit">
                     <option value="">-- Choose Day --</option>
                     <option value='Monday'>Monday</option><option value='Tuesday'>Tuesday</option><option value='Wednesday'>Wednesday</option><option value='Thursday'>Thursday</option><option value='Friday'>Friday</option><option value='Saturday'>Saturday</option><option value='Sunday'>Sunday</option>
                 </select>
             </div>
             <div class="col-md-3">
                 <label>Select Time Slot</label>
-                <select id="timeSelect" class="form-control selectpicker">
+                <select id="timeSelect" class="form-control custom-select-kfueit">
                     <option value="">-- Choose Time Slot --</option>
                     <option value='🕒 1.5-hour lecture slots' disabled>🕒 1.5 - hour lecture slots</option><option value='09:00-10:30' >09:00 - 10:30</option><option value='10:30-12:00' >10:30 - 12:00</option><option value='12:00-13:30' >12:00 - 13:30</option><option value='13:30-15:00' >13:30 - 15:00</option><option value='15:00-16:30' >15:00 - 16:30</option><option value='⏰ 3-hour lecture slots' disabled>⏰ 3 - hour lecture slots</option><option value='09:00-12:00' >09:00 - 12:00</option><option value='10:30-13:30' >10:30 - 13:30</option><option value='12:00-15:00' >12:00 - 15:00</option><option value='13:30-16:30' >13:30 - 16:30</option>
                 </select>
@@ -324,16 +353,35 @@
                             freeRooms.push(room);
                         }
                     }
-                    let resultHtml = '<h3>Free Rooms on ' + day + ' from ' + timeSlot.replace('-', ' - ') + '</h3><ul>';
+                    let resultHtml = '<h3>Free Rooms on ' + day + ' from ' + timeSlot.replace('-', ' - ') + '</h3>';
+                    resultHtml += '<p style="color:#26a69a;text-align:center;font-size:0.85rem;">Tap a room to view its timetable</p>';
+                    resultHtml += '<ul>';
                     if (freeRooms.length === 0) {
                         resultHtml += '<li>No free rooms found.</li>';
                     } else {
                         freeRooms.sort().forEach(r => {
-                            resultHtml += '<li>' + r + '</li>';
+                            let escapedRoom = r.replace(/'/g, "\'");
+                            resultHtml += '<li class="free-room-item" data-room="' + escapedRoom + '" style="cursor:pointer;">' + r + '</li>';
                         });
                     }
                     resultHtml += '</ul>';
                     $('#freeRoomsResult').html(resultHtml);
+
+                    $('#freeRoomsResult').off('click', '.free-room-item').on('click', '.free-room-item', function() {
+                        let room = $(this).data('room');
+                        if (roomTables[room]) {
+                            const area = $('#timetableArea');
+                            area.removeClass('visible animate__animated animate__fadeIn');
+                            area.html(roomTables[room]);
+                            setTimeout(() => {
+                                area.addClass('animate__animated animate__fadeIn');
+                                area.addClass('visible');
+                                area[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 100);
+                            $('.selectpicker').val('').selectpicker('refresh');
+                            $('#roomSelect').val(room).selectpicker('refresh');
+                        }
+                    });
                 });
             });
 
