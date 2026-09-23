@@ -187,7 +187,7 @@
     #downloadTimetable {
         position: absolute;
         top: 8px;
-        right: 8px;
+        left: 8px;
         z-index: 20;
         width: 36px;
         height: 36px;
@@ -366,13 +366,13 @@
     <div id="freeRoomsResult"></div>
 
     <div style="width:100%;max-width:1200px;text-align:center;margin-top:30px;padding:10px 0;border-top:1px solid #00b7eb;color:#26a69a;font-size:0.8rem;font-family:'Orbitron',sans-serif;">
-        Last Updated: September 24, 2026, 01:14 AM
+        Last Updated: September 24, 2026, 01:26 AM
     </div>
 
     <script>
         $(document).ready(function() {
-            // Init Select2 on ALL selects (class/teacher/course/room + free-room day/time)
-            $('#classSelect, #teacherSelect, #courseSelect, #roomSelect, #daySelect, #timeSelect').select2({
+            // Init Select2 on class/teacher/course/room (searchable)
+            $('#classSelect, #teacherSelect, #courseSelect, #roomSelect').select2({
                 placeholder: function() {
                     return $(this).find('option:first').text();
                 },
@@ -381,20 +381,30 @@
                 minimumResultsForSearch: 0
             });
 
+            // Init Select2 on free-room day/time (no search box)
+            $('#daySelect, #timeSelect').select2({
+                placeholder: function() {
+                    return $(this).find('option:first').text();
+                },
+                allowClear: false,
+                width: '100%',
+                minimumResultsForSearch: Infinity
+            });
+
             // Force clean state every load (no residual last-selected value)
             $('#classSelect, #teacherSelect, #courseSelect, #roomSelect, #daySelect, #timeSelect').val(null).trigger('change.select2');
             $('#timetableArea').html('').removeClass('visible animate__animated animate__fadeIn');
 
-            // Auto-focus search field + set placeholder whenever any Select2 opens
-            // Desktop: typing works immediately (no extra click needed)
-            // Mobile: cursor blinks + keyboard opens so users know it is searchable
-            $(document).on('select2:open', function() {
+            // Auto-focus search field + set placeholder whenever a searchable Select2 opens
+            // Skipped for Day / Time Slot so no keyboard or search bar appears there
+            $(document).on('select2:open', function(e) {
+                if ($(e.target).is('#daySelect, #timeSelect')) return;
                 setTimeout(function() {
                     var $search = $('.select2-container--open .select2-search__field');
                     if ($search.length) {
                         $search.attr('placeholder', 'Type to search...');
                         $search[0].focus();
-                        try { $search[0].click(); } catch (e) {}
+                        try { $search[0].click(); } catch (err) {}
                     }
                 }, 10);
             });
