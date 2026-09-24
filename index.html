@@ -455,6 +455,44 @@
             gap: 14px 20px;
         }
     }
+    /* Fit the opened timetable to the screen: no zooming out, no horizontal scrolling */
+    #timetableArea,
+    #timetableArea .time_table {
+        max-width: 100%;
+    }
+    #timetableArea .time_table {
+        width: 100% !important;
+        table-layout: auto;
+    }
+    #timetableArea .time_table td,
+    #timetableArea .time_table th {
+        min-width: 0 !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+    }
+    @media (max-width: 600px) {
+        body {
+            padding: 8px;
+        }
+        #timetableArea .time_table td,
+        #timetableArea .time_table th {
+            font-size: clamp(0.4rem, 1.9vw, 0.7rem) !important;
+            padding: 2px 1px !important;
+        }
+        #timetableArea .neon-block {
+            font-size: clamp(0.4rem, 1.9vw, 0.7rem);
+            padding: 2px 1px;
+        }
+        #timetableArea .timeside {
+            height: auto;
+        }
+        #timetableArea .timeside p {
+            font-size: inherit;
+        }
+        #timetableArea .kf_heading {
+            font-size: 1rem;
+        }
+    }
     </style>
 </head>
 <body>
@@ -515,7 +553,7 @@
 
     <footer class="kf-footer">
         <div class="kf-footer-row kf-timestamp">
-            Last Updated: September 25, 2026, 12:19 AM
+            Last Updated: September 25, 2026, 12:30 AM
         </div>
         <div class="kf-footer-row kf-attribution">Made By: N!42 54RW4R</div>
         <div class="kf-contact">
