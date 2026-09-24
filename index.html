@@ -493,6 +493,36 @@
             font-size: 1rem;
         }
     }
+    /* Vertical time labels keep the time column narrow */
+    #timetableArea .timeside {
+        width: 1%;
+        padding: 4px 3px;
+    }
+    #timetableArea .corner_box {
+        width: 1%;
+    }
+    #timetableArea .timeside p {
+        display: inline-block;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        line-height: 1.1;
+        margin: 0;
+    }
+    /* Day / Time corner label stays horizontal, sized small to keep the column narrow */
+    #timetableArea .corner_box p,
+    #timetableArea .corner_box span {
+        display: block;
+        margin: 0;
+        font-size: 0.6rem;
+        line-height: 1.2;
+    }
+    @media (max-width: 600px) {
+        #timetableArea .corner_box p,
+        #timetableArea .corner_box span {
+            font-size: inherit;
+        }
+    }
     </style>
 </head>
 <body>
@@ -553,7 +583,7 @@
 
     <footer class="kf-footer">
         <div class="kf-footer-row kf-timestamp">
-            Last Updated: September 25, 2026, 12:30 AM
+            Last Updated: September 25, 2026, 12:40 AM
         </div>
         <div class="kf-footer-row kf-attribution">Made By: N!42 54RW4R</div>
         <div class="kf-contact">
